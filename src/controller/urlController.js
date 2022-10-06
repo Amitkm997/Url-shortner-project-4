@@ -34,13 +34,12 @@ const shortUrl = async (req, res) => {
   if (!validUrl.isUri(baseUrl)) {
     return res.status(400).send({ status: false, message: "Invalid base url" });
   }
-
   // check long url
-  if (validUrl.isUri(longUrl)) {
+   if (validUrl.isUri(longUrl)) {
     try {
       const cachedData = await GET_ASYNC(`${longUrl}`)
       if(cachedData){
-        return res.status(400).send({ status : false, msg : "Urlfrom cache" ,data:JSON.parse(cachedData)});
+        return res.status(400).send({ status : false, msg : "Url from cache" ,data:JSON.parse(cachedData)});
       }
       let url = await urlModel.findOne({ longUrl });
       if (url) {
@@ -61,11 +60,11 @@ const shortUrl = async (req, res) => {
       }
     } catch (error) {
       console.error(error);
-      return res.status(500).send({ message: "Some error has occurred" });
+      return res.status(500).send({ status:false,message: "Some error has occurred" });
     }
-  } else {
-    return res.status(400).send({ message: "Invalid long url" });
-  }
+   } else {
+    return res.status(400).send({ status:false,message: "Invalid long url" });
+   }
 };
 
 // get url
@@ -83,7 +82,7 @@ const getUrl = async function (req, res) {
           if (!cachedData) {
               return res.status(404).send({ status: false, message: "Long URL Not Found" })
           }
-          await SET_ASYNC(`${req.params.urlCode}`, JSON.stringify(cachedData), "EX",10)
+          await SET_ASYNC(`${req.params.urlCode}`, JSON.stringify(cachedData), "EX",100)
           return res.status(302).redirect(cachedData.longUrl)
       }
   } catch (err) {
