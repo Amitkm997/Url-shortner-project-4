@@ -39,7 +39,7 @@ const shortUrl = async (req, res) => {
     try {
       const cachedData = await GET_ASYNC(`${longUrl}`)
       if(cachedData){
-        return res.status(400).send({ status : false, msg : "Url from cache" ,data:JSON.parse(cachedData)});
+        return res.status(201).send({ status : true, msg : "Url from cache" ,data:JSON.parse(cachedData)});
       }
       let url = await urlModel.findOne({ longUrl });
       if (url) {
